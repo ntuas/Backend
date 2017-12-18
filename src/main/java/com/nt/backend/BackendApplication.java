@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BackendApplication {
 
-	@Value("${WelcomeMessage:No Welcome Message defined}")
+	@Value("${WelcomeMessage:No Welcome Message defined!}")
 	private String message;
 
 	public static void main(String[] args) {
