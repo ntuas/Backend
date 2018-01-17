@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: dieter
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: product_name
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_items_cnt
+                  type: int
+                  constraints:
+                    nullable: false

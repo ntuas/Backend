@@ -1,0 +1,14 @@
+backend:
+  datasource:
+    url: jdbc:mysql://172.18.0.6/uasnt?useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+
+  messaging:
+    queueName: products-queue
+    topicName: newProduct
+    host: 172.18.0.7
+    user: mquser
+    password: mquser
+    vhost: uasnt
