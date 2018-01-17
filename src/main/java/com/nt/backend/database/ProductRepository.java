@@ -1,6 +1,6 @@
 package com.nt.backend.database;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface ProductRepository extends CrudRepository<Product, String>{
+public interface ProductRepository extends PagingAndSortingRepository<Product, String> {
 }

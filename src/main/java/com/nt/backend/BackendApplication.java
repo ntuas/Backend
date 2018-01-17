@@ -9,18 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @EnableConfigurationProperties
-@RestController
 public class BackendApplication {
-
-	@Value("${WelcomeMessage:No Welcome Message defined}")
-	private String message;
-
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
-	@RequestMapping("/")
-	public String getMessage() {
-		return this.message;
-	}
 }

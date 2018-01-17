@@ -59,14 +59,14 @@ public class ProductRepositoryTest {
     public void check_incrementation_of_items_count() {
         // Given one entry in the DB
         Product butter = productRepository.save(new Product("Butter"));
-        assertThat(butter.getProductItemsCount()).isEqualTo(0);
+        assertThat(butter.getProductItemsCount()).isEqualTo(1);
 
         // When items count is incremented by one
         butter.setProductItemsCount(butter.getProductItemsCount() + 1);
         Product newButter = productRepository.findOne("Butter");
 
         // Then the items on the db must be updated
-        assertThat(newButter.getProductItemsCount()).isEqualTo(1);
+        assertThat(newButter.getProductItemsCount()).isEqualTo(2);
     }
 
 }

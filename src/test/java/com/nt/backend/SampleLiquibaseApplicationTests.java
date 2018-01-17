@@ -37,7 +37,7 @@ public class SampleLiquibaseApplicationTests {
         }
         String output = this.outputCapture.toString();
         assertThat(output).contains("Successfully acquired change log lock")
-                .contains("Table products created")
+                .contains("Table product created")
                 .contains("ChangeSet classpath:/db/changelog/db.changelog-master.yaml" +
                         "::1::dieter ran successfully")
                 .contains("Successfully released change log lock");

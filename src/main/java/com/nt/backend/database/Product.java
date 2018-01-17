@@ -19,11 +19,13 @@ public class Product {
     @Id
     @Column(name="product_name")
     private String productName;
+
+
     @Column(name="product_items_cnt")
     private int productItemsCount;
 
     public Product(String productName) {
         this.productName = productName;
+        this.productItemsCount = 1;
     }
-
 }
