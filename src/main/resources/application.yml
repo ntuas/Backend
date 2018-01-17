@@ -6,8 +6,8 @@ backend:
     driver-class-name: com.mysql.jdbc.Driver
 
   messaging:
-    orderManageQueue: products.manage.queue
-    orderQueue: products.order.queue
+    manageProductsQueue: products.manage.queue
+    orderProductsQueue: products.order.queue
     host: 172.18.0.7
     user: mquser
     password: mquser

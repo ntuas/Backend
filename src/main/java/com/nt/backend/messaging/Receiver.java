@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Setter
 public class Receiver {
 
-    private String orderQueue;
+    private String orderProductsQueue;
 
     @Autowired
     private ProductRepository productRepository;
@@ -42,7 +42,7 @@ public class Receiver {
      * @param message
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "${backend.messaging.orderManageQueue}", durable = "true"),
+            value = @Queue(value = "${backend.messaging.manageProductsQueue}", durable = "true"),
             exchange = @Exchange(value = "auto.exch", ignoreDeclarationExceptions = "true")))
     public void receiveMessage(Message message) {
         log.debug("Received <" + message + ">");
@@ -60,23 +60,21 @@ public class Receiver {
     }
 
     private void orderProducts() {
-        productRepository.findAll().forEach(this::accept);
-    }
-
-    private void accept(Product product) {
-        if (product.getProductItemsCount() < 2)
-            order(product);
+        productRepository.findAll().forEach(this::order);
     }
 
     private void order(Product product) {
+        if (product.getProductItemsCount() >= 2)
+            return;
+
         Message message = MessageBuilder.withBody("Please order new product".getBytes())
                 .andProperties(
                         MessagePropertiesBuilder.newInstance().setHeader("product", product.getProductName()).build())
                 .build();
-        log.info("Send message " + message + " to queue " + orderQueue);
+        log.info("Send message " + message + " to queue " + orderProductsQueue);
         RabbitAdmin admin = new RabbitAdmin(this.rabbitTemplate.getConnectionFactory());
-        admin.declareQueue(new org.springframework.amqp.core.Queue(orderQueue, true));
-        rabbitTemplate.send(orderQueue, message);
+        admin.declareQueue(new org.springframework.amqp.core.Queue(orderProductsQueue, true));
+        rabbitTemplate.send(orderProductsQueue, message);
     }
 
     private void getProduct(String productName) {
