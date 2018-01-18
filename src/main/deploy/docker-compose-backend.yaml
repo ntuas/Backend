@@ -1,0 +1,23 @@
+---
+version: '3.4'
+
+services:
+  backend:
+    image: dockerregistry.uas.nt.public/nt.uas.backend/backend:@VERSION@
+    restart: unless-stopped
+    hostname: backend
+    labels:
+      SERVICE_CHECK_HTTP: /health
+      SERVICE_CHECK_INTERVAL: 15s
+      SERVICE_CHECK_TIMEOUT: 2s
+    environment:
+      SPRING_CLOUD_CONSUL_HOST: "${CONSUL_HOST:-consul}"
+      SPRING_CLOUD_CONSUL_PORT: "${CONSUL_PORT:-8500}"
+    networks:
+      default:
+        aliases:
+          - backend.${DOMAIN_NAME}
+
+networks:
+  default:
+...

@@ -1,3 +1,6 @@
+server:
+  port: 8888
+
 backend:
   datasource:
     serviceId: mysql
@@ -15,3 +18,15 @@ backend:
     user: mquser
     password: mquser
     vhost: uasnt
+
+endpoints:
+  enabled: false
+  health:
+    enabled: true
+
+spring:
+  cloud:
+    discovery:
+      client:
+        composite-indicator:
+          enabled: false

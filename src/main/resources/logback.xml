@@ -15,5 +15,6 @@
 
     <logger name="org.springframework.amqp" level="INFO"/>
     <logger name="liquibase" level="INFO"/>
+    <logger name="org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer" level="INFO"/>
 
 </configuration>
