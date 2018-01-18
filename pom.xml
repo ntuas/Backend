@@ -5,7 +5,7 @@
 
 	<groupId>com.nt</groupId>
 	<artifactId>Backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${gitdescribe}</version>
 	<packaging>jar</packaging>
 
 	<name>Backend</name>
@@ -91,6 +91,28 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.lukegb.mojo</groupId>
+				<artifactId>gitdescribe-maven-plugin</artifactId>
+				<version>3.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>gitdescribe</goal>
+						</goals>
+						<id>git-describe</id>
+						<phase>initialize</phase>
+						<configuration>
+							<descriptionProperty>gitdescribe</descriptionProperty>
+							<extraArguments>
+								<param>--tags</param>
+								<param>--dirty</param>
+								<param>--abbrev=8</param>
+							</extraArguments>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
