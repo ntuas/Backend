@@ -4,7 +4,7 @@ cd $(dirname $0)
 source ./defaults.sh
 
 prepare () {
-    (./mvnw clean install)
+    (./mvnw clean install -Dapp.version=${TAG})
 }
 
 build () {
