@@ -1,0 +1,19 @@
+<configuration scan="true" scanPeriod="30 seconds">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
+        <encoder>
+            <Pattern>"%date{yyyy-MM-dd'T'HH:mm:ss.SSSZ, Europe/Berlin}" [%thread] %-5level [%logger{42}:%line] - message: "%msg"%n</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <logger name="com.nt" level="INFO"/>
+
+    <logger name="org.springframework.amqp" level="INFO"/>
+    <logger name="liquibase" level="INFO"/>
+
+</configuration>

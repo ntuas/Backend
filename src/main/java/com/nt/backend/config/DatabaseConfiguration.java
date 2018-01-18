@@ -2,6 +2,8 @@ package com.nt.backend.config;
 
 import com.nt.backend.discovery.AddressServiceDiscovery;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,6 +18,8 @@ import javax.sql.DataSource;
 @ConfigurationProperties("backend.datasource")
 @Setter
 public class DatabaseConfiguration {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfiguration.class);
 
     private static final String URL_FORMAT = "jdbc:%s://%s/%s?%s";
 
@@ -34,11 +38,13 @@ public class DatabaseConfiguration {
     public DataSource dataSource() {
         String addresses = addressServiceDiscovery.getAddresses(serviceId);
         String url = String.format(URL_FORMAT, schema, addresses, database, properties);
-        return DataSourceBuilder.create()
+        DataSource dataSource = DataSourceBuilder.create()
                 .url(url)
                 .username(username)
                 .password(password)
                 .driverClassName(driverClassName)
                 .build();
+        LOGGER.info("Created new datasource: " + dataSource);
+        return dataSource;
     }
 }
