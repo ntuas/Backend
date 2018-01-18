@@ -3,7 +3,7 @@ version: '3.4'
 
 services:
   backend:
-    image: dockerregistry.uas.nt.public/nt.uas.backend/backend:@VERSION@
+    image: dockerregistry.uas.nt.public/nt.uas.backend/backend:@app.version@
     restart: unless-stopped
     hostname: backend
     labels:

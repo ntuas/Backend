@@ -5,7 +5,7 @@
 
 	<groupId>com.nt</groupId>
 	<artifactId>Backend</artifactId>
-	<version>${gitdescribe}</version>
+	<version>${app.version}</version>
 	<packaging>jar</packaging>
 
 	<name>Backend</name>
@@ -108,7 +108,7 @@
 						<id>git-describe</id>
 						<phase>initialize</phase>
 						<configuration>
-							<descriptionProperty>gitdescribe</descriptionProperty>
+							<descriptionProperty>app.version</descriptionProperty>
 							<extraArguments>
 								<param>--tags</param>
 								<param>--dirty</param>
@@ -123,7 +123,7 @@
                 <version>3.0.2</version>
                 <executions>
                     <execution>
-                        <id>copy-resources</id>
+                        <id>copy-docker-resources</id>
                         <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -147,6 +147,25 @@
                                     </includes>
                                 </resource>
                             </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-deploy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/deploy</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/deploy</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                            <delimiters>
+                                <delimiter>@*@</delimiter>
+                            </delimiters>
                         </configuration>
                     </execution>
                 </executions>
