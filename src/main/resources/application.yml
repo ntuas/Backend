@@ -1,14 +1,17 @@
 backend:
   datasource:
-    url: jdbc:mysql://172.18.0.6/uasnt?useSSL=false
+    serviceId: mysql
+    schema: mysql
+    database: uasnt
+    properties: useSSL=false
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
 
   messaging:
+    serviceId: rabbitmq
     manageProductsQueue: products.manage.queue
     orderProductsQueue: products.order.queue
-    host: 172.18.0.7
     user: mquser
     password: mquser
     vhost: uasnt
