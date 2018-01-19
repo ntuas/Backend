@@ -7,23 +7,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessagePropertiesBuilder;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-@ConfigurationProperties("backend.messaging")
 @Setter
 public class Receiver {
 
-    private String orderProductsQueue;
+    @Autowired
+    private org.springframework.amqp.core.Queue orderProductsQueue;
 
     @Autowired
     private ProductRepository productRepository;
@@ -41,9 +36,7 @@ public class Receiver {
      *
      * @param message
      */
-    @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "${backend.messaging.manageProductsQueue}", durable = "true"),
-            exchange = @Exchange(value = "auto.exch", ignoreDeclarationExceptions = "true")))
+    @RabbitListener(queues = "#{manageProductsQueue.name}")
     public void receiveMessage(Message message) {
         log.debug("Received <" + message + ">");
         String product = new String(message.getBody());
@@ -72,9 +65,7 @@ public class Receiver {
                         MessagePropertiesBuilder.newInstance().setHeader("product", product.getProductName()).build())
                 .build();
         log.info("Send message " + message + " to queue " + orderProductsQueue);
-        RabbitAdmin admin = new RabbitAdmin(this.rabbitTemplate.getConnectionFactory());
-        admin.declareQueue(new org.springframework.amqp.core.Queue(orderProductsQueue, true));
-        rabbitTemplate.send(orderProductsQueue, message);
+        rabbitTemplate.send(orderProductsQueue.getName(), message);
     }
 
     private void getProduct(String productName) {

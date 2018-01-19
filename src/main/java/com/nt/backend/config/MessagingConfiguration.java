@@ -2,10 +2,12 @@ package com.nt.backend.config;
 
 import com.nt.backend.discovery.AddressServiceDiscovery;
 import lombok.Setter;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +24,8 @@ public class MessagingConfiguration {
     @Autowired
     private AddressServiceDiscovery addressServiceDiscovery;
 
+    private String orderProductsQueue;
+    private String manageProductsQueue;
     private String serviceId;
     private String user;
     private String password;
@@ -34,7 +38,27 @@ public class MessagingConfiguration {
         connectionFactory.setUsername(user);
         connectionFactory.setPassword(password);
         connectionFactory.setVirtualHost(vhost);
+
         return connectionFactory;
+    }
+
+    @Bean
+    public Queue orderProductsQueue() {
+        Queue queue = new Queue(orderProductsQueue, true);
+        rabbitAdmin().declareQueue(queue);
+        return queue;
+    }
+
+    @Bean
+    public Queue manageProductsQueue() {
+        Queue queue = new Queue(manageProductsQueue, true);
+        rabbitAdmin().declareQueue(queue);
+        return queue;
+    }
+
+    @Bean
+    public RabbitAdmin rabbitAdmin() {
+        return new RabbitAdmin(connectionFactory());
     }
 
     @Bean
