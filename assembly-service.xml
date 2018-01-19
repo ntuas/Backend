@@ -6,7 +6,7 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
         <fileSet>
-            <directory>target/deploy</directory>
+            <directory>target/service</directory>
             <outputDirectory>.</outputDirectory>
         </fileSet>
     </fileSets>
