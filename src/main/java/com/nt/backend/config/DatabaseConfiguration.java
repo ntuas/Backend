@@ -2,10 +2,10 @@ package com.nt.backend.config;
 
 import com.nt.backend.discovery.AddressServiceDiscovery;
 import lombok.Setter;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,15 +35,25 @@ public class DatabaseConfiguration {
     private String driverClassName;
 
     @Bean
-    public DataSource dataSource() {
+    public PoolProperties poolProperties() {
         String addresses = addressServiceDiscovery.getAddresses(serviceId);
         String url = String.format(URL_FORMAT, schema, addresses, database, properties);
-        DataSource dataSource = DataSourceBuilder.create()
-                .url(url)
-                .username(username)
-                .password(password)
-                .driverClassName(driverClassName)
-                .build();
+
+        PoolProperties poolProperties = new PoolProperties();
+        poolProperties.setTestOnBorrow(true);
+        poolProperties.setValidationQuery("SELECT 1");
+        poolProperties.setDriverClassName(driverClassName);
+        poolProperties.setUsername(username);
+        poolProperties.setPassword(password);
+        poolProperties.setUrl(url);
+        return poolProperties;
+    }
+
+    @Bean
+    public DataSource dataSource(PoolProperties poolProperties) {
+
+        DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource(poolProperties);
+
         LOGGER.info("Created new datasource: " + dataSource);
         return dataSource;
     }
