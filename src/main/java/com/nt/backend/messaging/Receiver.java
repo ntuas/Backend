@@ -45,8 +45,8 @@ public class Receiver {
 
         if ("put".equalsIgnoreCase(action))
             putProduct(product);
-        else if ("pull".equalsIgnoreCase(action))
-            getProduct(product);
+        else if ("take".equalsIgnoreCase(action))
+            takeProduct(product);
         else if("order".equalsIgnoreCase(action)) {
             orderProducts();
         }
@@ -68,7 +68,7 @@ public class Receiver {
         rabbitTemplate.send(orderProductsQueue.getName(), message);
     }
 
-    private void getProduct(String productName) {
+    private void takeProduct(String productName) {
         Product product = productRepository.findOne(productName);
         if (product != null) {
             int productItemsCount = product.getProductItemsCount();
