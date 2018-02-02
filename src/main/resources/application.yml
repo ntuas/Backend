@@ -3,6 +3,7 @@ server:
 
 backend:
   datasource:
+    url: ${CLEARDB_DATABASE_URL}
     serviceId: mysql
     schema: mysql
     database: uasnt

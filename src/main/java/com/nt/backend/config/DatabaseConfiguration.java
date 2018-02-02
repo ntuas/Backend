@@ -33,20 +33,31 @@ public class DatabaseConfiguration {
     private String username;
     private String password;
     private String driverClassName;
+    private String url;
 
     @Bean
     public PoolProperties poolProperties() {
-        String addresses = addressServiceDiscovery.getAddresses(serviceId);
-        String url = String.format(URL_FORMAT, schema, addresses, database, properties);
-
         PoolProperties poolProperties = new PoolProperties();
+
+
         poolProperties.setTestOnBorrow(true);
         poolProperties.setValidationQuery("SELECT 1");
         poolProperties.setDriverClassName(driverClassName);
+        if (url != null) {
+            poolProperties.setUrl(url);
+        } else
+            setConnectionPropertiesFromServiceRegistry(poolProperties);
+
+        return poolProperties;
+    }
+
+    private void setConnectionPropertiesFromServiceRegistry(PoolProperties poolProperties) {
+        String addresses = addressServiceDiscovery.getAddresses(serviceId);
+        String url = String.format(URL_FORMAT, schema, addresses, database, properties);
+
+        poolProperties.setUrl(url);
         poolProperties.setUsername(username);
         poolProperties.setPassword(password);
-        poolProperties.setUrl(url);
-        return poolProperties;
     }
 
     @Bean
