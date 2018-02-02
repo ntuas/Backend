@@ -12,6 +12,7 @@ backend:
     driver-class-name: com.mysql.jdbc.Driver
 
   messaging:
+    url: ${CLOUDAMQP_URL}
     serviceId: rabbitmq
     manageProductsQueue: products.manage.queue
     orderProductsQueue: products.order.queue
