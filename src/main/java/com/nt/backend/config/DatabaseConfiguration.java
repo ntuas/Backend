@@ -64,7 +64,7 @@ public class DatabaseConfiguration {
             int seperatorIndex = userInfo.indexOf(":");
             String user = userInfo.substring(0, seperatorIndex);
             String pw = userInfo.substring(seperatorIndex + 1);
-            StringBuilder url = new StringBuilder().append("jdbc:").append(uri.getScheme()).append("://").append(uri.getHost()).append("/").append(uri.getPath());
+            StringBuilder url = new StringBuilder().append("jdbc:").append(uri.getScheme()).append("://").append(uri.getHost()).append(uri.getPath());
             String query = uri.getQuery();
             if (query != null)
                 url.append("?").append(query);
