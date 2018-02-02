@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Profile("cloud")
 @Configuration
@@ -44,11 +46,30 @@ public class DatabaseConfiguration {
         poolProperties.setValidationQuery("SELECT 1");
         poolProperties.setDriverClassName(driverClassName);
         if (url != null) {
-            poolProperties.setUrl(url);
+            setConnectionPropertiesFromUrl(poolProperties);
         } else
             setConnectionPropertiesFromServiceRegistry(poolProperties);
 
         return poolProperties;
+    }
+
+    private void setConnectionPropertiesFromUrl(PoolProperties poolProperties) {
+        try {
+            URI uri = new URI(url);
+            String userInfo = uri.getUserInfo();
+            int seperatorIndex = userInfo.indexOf(":");
+            String user = userInfo.substring(0, seperatorIndex);
+            String pw = userInfo.substring(seperatorIndex + 1);
+            StringBuilder url = new StringBuilder().append("jdbc:").append(uri.getScheme()).append("://").append(uri.getHost()).append("/").append(uri.getPath());
+            String query = uri.getQuery();
+            if (query != null)
+                url.append("?").append(query);
+            poolProperties.setUrl(url.toString());
+            poolProperties.setUsername(user);
+            poolProperties.setPassword(pw);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void setConnectionPropertiesFromServiceRegistry(PoolProperties poolProperties) {
