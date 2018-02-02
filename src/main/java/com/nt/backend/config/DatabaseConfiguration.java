@@ -2,6 +2,7 @@ package com.nt.backend.config;
 
 import com.nt.backend.discovery.AddressServiceDiscovery;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import java.net.URISyntaxException;
 @Configuration
 @ConfigurationProperties("backend.datasource")
 @Setter
+@Slf4j
 public class DatabaseConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfiguration.class);
@@ -49,12 +51,14 @@ public class DatabaseConfiguration {
             setConnectionPropertiesFromUrl(poolProperties);
         } else
             setConnectionPropertiesFromServiceRegistry(poolProperties);
-
+        log.info(poolProperties.toString());
         return poolProperties;
     }
 
     private void setConnectionPropertiesFromUrl(PoolProperties poolProperties) {
         try {
+            log.info("Create connection pool from given url '" + url + "'");
+
             URI uri = new URI(url);
             String userInfo = uri.getUserInfo();
             int seperatorIndex = userInfo.indexOf(":");
@@ -73,6 +77,7 @@ public class DatabaseConfiguration {
     }
 
     private void setConnectionPropertiesFromServiceRegistry(PoolProperties poolProperties) {
+        log.info("Create connection pool from service discovery");
         String addresses = addressServiceDiscovery.getAddresses(serviceId);
         String url = String.format(URL_FORMAT, schema, addresses, database, properties);
 
