@@ -47,7 +47,7 @@ public class DatabaseConfiguration {
         poolProperties.setTestOnBorrow(true);
         poolProperties.setValidationQuery("SELECT 1");
         poolProperties.setDriverClassName(driverClassName);
-        if (url != null) {
+        if (url != null && !url.isEmpty()) {
             setConnectionPropertiesFromUrl(poolProperties);
         } else
             setConnectionPropertiesFromServiceRegistry(poolProperties);

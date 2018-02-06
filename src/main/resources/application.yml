@@ -3,7 +3,7 @@ server:
 
 backend:
   datasource:
-    url: ${CLEARDB_DATABASE_URL}
+    url: ${CLEARDB_DATABASE_URL:}
     serviceId: mysql
     schema: mysql
     database: uasnt
@@ -13,7 +13,7 @@ backend:
     driver-class-name: com.mysql.jdbc.Driver
 
   messaging:
-    url: ${CLOUDAMQP_URL}
+    url: ${CLOUDAMQP_URL:}
     serviceId: rabbitmq
     manageProductsQueue: products.manage.queue
     orderProductsQueue: products.order.queue
