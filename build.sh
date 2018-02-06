@@ -13,7 +13,7 @@ prepare () {
 build () {
     local image_dir=$(cd ${PROJECT_DIR} && readlink -f "${DIST_DIR}")
     echo "Building image from '${image_dir}'..."
-    docker build --pull -t "${DOCKER_IMAGE}" --build-arg VERSION=${TAG} "${image_dir}"
+    docker build -t "${DOCKER_IMAGE}" --build-arg VERSION=${TAG} "${image_dir}"
 }
 
 prepare

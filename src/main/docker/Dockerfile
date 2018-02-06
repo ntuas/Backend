@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-slim
+FROM openjdk:8u151-jre-slim
 WORKDIR /app
 ENTRYPOINT ["/app/run-backend.sh"]
 ENV JAVA_OPTS="-Xmx2g"
