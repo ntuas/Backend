@@ -4,13 +4,16 @@ import com.nt.backend.database.Product;
 import com.nt.backend.database.ProductRepository;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageBuilder;
-import org.springframework.amqp.core.MessagePropertiesBuilder;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -47,10 +50,26 @@ public class Receiver {
             putProduct(product);
         else if ("take".equalsIgnoreCase(action))
             takeProduct(product);
-        else if("order".equalsIgnoreCase(action)) {
+        else if ("order".equalsIgnoreCase(action)) {
             orderProducts();
+        } else if ("count".equalsIgnoreCase(action)) {
+            countProducts(new String(message.getBody()), message.getMessageProperties().getReplyTo(), message.getMessageProperties().getCorrelationIdString());
         }
     }
+
+    private void countProducts(String product, String replyTo, String correlationIdString) {
+        log.info("The response will be returned to reply-queue {} with correlationId {}", replyTo, correlationIdString);
+        rabbitTemplate.send(replyTo, MessageBuilder
+                .withBody(getAmountForProduct(product))
+                .andProperties(MessagePropertiesBuilder.newInstance().setCorrelationIdString(correlationIdString).build()).build());
+    }
+
+    private byte[] getAmountForProduct(String product) {
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put(product, 0);
+        return Arrays.asList(map).toString().getBytes();
+    }
+
 
     private void orderProducts() {
         productRepository.findAll().forEach(this::order);
