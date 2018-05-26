@@ -1,18 +1,19 @@
 package com.nt.backend.messaging;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nt.backend.database.Product;
 import com.nt.backend.database.ProductRepository;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -58,6 +59,7 @@ public class Receiver {
     }
 
     private void countProducts(String product, String replyTo, String correlationIdString) {
+
         log.info("The response will be returned to reply-queue {} with correlationId {}", replyTo, correlationIdString);
         rabbitTemplate.send(replyTo, MessageBuilder
                 .withBody(getAmountForProduct(product))
@@ -65,9 +67,21 @@ public class Receiver {
     }
 
     private byte[] getAmountForProduct(String product) {
-        HashMap<String, Integer> map = new HashMap<>();
-        map.put(product, 0);
-        return Arrays.asList(map).toString().getBytes();
+        Map<String, Integer> productCounts = new HashMap<>();
+
+        if (product.isEmpty()) {
+            productRepository.findAll().forEach(productFromDb -> productCounts.put(productFromDb.getProductName(), productFromDb.getProductItemsCount()));
+        } else {
+            Product productFromDb = productRepository.findOne(product);
+            if (productFromDb != null)
+                productCounts.put(productFromDb.getProductName(), productFromDb.getProductItemsCount());
+        }
+
+        try {
+            return new ObjectMapper().writeValueAsString(productCounts).getBytes();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
