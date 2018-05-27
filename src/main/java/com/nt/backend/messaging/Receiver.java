@@ -6,15 +6,18 @@ import com.nt.backend.database.Product;
 import com.nt.backend.database.ProductRepository;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessagePropertiesBuilder;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 @Slf4j
@@ -78,7 +81,7 @@ public class Receiver {
         }
 
         try {
-            return new ObjectMapper().writeValueAsString(productCounts).getBytes();
+            return new ObjectMapper().writeValueAsString(productCounts).getBytes(UTF_8);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
