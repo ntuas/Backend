@@ -45,7 +45,7 @@ public class Receiver {
      */
     @RabbitListener(queues = "#{manageProductsQueue.name}")
     public void receiveMessage(Message message) {
-        log.info("Received <" + message + ">");
+        log.debug("Received <" + message + ">");
         String product = new String(message.getBody());
         String action = (String) message.getMessageProperties().getHeaders().get("action");
         log.info("Have to " + action + " " + product);
