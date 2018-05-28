@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @ConfigurationProperties("backend.datasource")
@@ -19,10 +21,14 @@ import java.net.URISyntaxException;
 @Slf4j
 public class DatabaseConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfiguration.class);
-
-    private String driverClassName;
+    private static final Map<String, String> database2DbDriverMap = new HashMap<>();
+    private String database;
     private String url;
+
+    static {
+        database2DbDriverMap.put("h2", "org.h2.Driver");
+        database2DbDriverMap.put("mysql", "com.mysql.jdbc.Driver");
+    }
 
     @Bean
     public PoolProperties poolProperties() {
@@ -31,7 +37,7 @@ public class DatabaseConfiguration {
 
         poolProperties.setTestOnBorrow(true);
         poolProperties.setValidationQuery("SELECT 1");
-        poolProperties.setDriverClassName(driverClassName);
+        poolProperties.setDriverClassName(database2DbDriverMap.get(database));
             setConnectionPropertiesFromUrl(poolProperties);
         log.info(poolProperties.toString());
         return poolProperties;
@@ -39,7 +45,7 @@ public class DatabaseConfiguration {
 
     private void setConnectionPropertiesFromUrl(PoolProperties poolProperties) {
         try {
-            log.info("Create connection pool from given url '" + url + "'");
+            log.debug("Create connection pool from given url '{}'", url);
 
             URI uri = new URI(url);
             String userInfo = uri.getUserInfo();
@@ -69,7 +75,7 @@ public class DatabaseConfiguration {
 
         DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource(poolProperties);
 
-        LOGGER.info("Created new datasource: " + dataSource);
+        log.info("Created new datasource: {}", dataSource);
         return dataSource;
     }
 }
