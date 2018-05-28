@@ -45,7 +45,7 @@ public class Receiver {
      */
     @RabbitListener(queues = "#{manageProductsQueue.name}")
     public void receiveMessage(Message message) {
-        log.debug("Received <" + message + ">");
+        log.info("Received <" + message + ">");
         String product = new String(message.getBody());
         String action = (String) message.getMessageProperties().getHeaders().get("action");
         log.info("Have to " + action + " " + product);
@@ -57,16 +57,18 @@ public class Receiver {
         else if ("order".equalsIgnoreCase(action)) {
             orderProducts();
         } else if ("count".equalsIgnoreCase(action)) {
-            countProducts(new String(message.getBody()), message.getMessageProperties().getReplyTo(), message.getMessageProperties().getCorrelationIdString());
+            countProducts(new String(message.getBody()), message.getMessageProperties().getReplyTo(), message.getMessageProperties().getCorrelationId(), message.getMessageProperties().getCorrelationIdString());
         }
     }
 
-    private void countProducts(String product, String replyTo, String correlationIdString) {
+    private void countProducts(String product, String replyTo, byte[] corelationId, String correlationIdString) {
 
         log.info("The response will be returned to reply-queue {} with correlationId {}", replyTo, correlationIdString);
         rabbitTemplate.send(replyTo, MessageBuilder
                 .withBody(getAmountForProduct(product))
-                .andProperties(MessagePropertiesBuilder.newInstance().setCorrelationIdString(correlationIdString).build()).build());
+                .andProperties(MessagePropertiesBuilder.newInstance()
+                        .setCorrelationIdString(correlationIdString)
+                        .setCorrelationId(corelationId).build()).build());
     }
 
     private byte[] getAmountForProduct(String product) {
