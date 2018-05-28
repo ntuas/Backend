@@ -1,22 +1,12 @@
 backend:
   datasource:
     url: ${CLEARDB_DATABASE_URL:}
-    serviceId: mysql
-    schema: mysql
-    database: uasnt
-    properties: useSSL=false
-    username: root
-    password: root
     driver-class-name: com.mysql.jdbc.Driver
 
   messaging:
     url: ${CLOUDAMQP_URL:}
-    serviceId: rabbitmq
     manageProductsQueue: products.manage.queue
     orderProductsQueue: products.order.queue
-    user: mquser
-    password: mquser
-    vhost: uasnt
 
 endpoints:
   enabled: false
