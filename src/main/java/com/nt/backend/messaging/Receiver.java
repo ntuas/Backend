@@ -50,12 +50,11 @@ public class Receiver {
         String action = (String) message.getMessageProperties().getHeaders().get("action");
         log.info("Have to " + action + " " + product);
 
-        if ("put".equalsIgnoreCase(action))
-            throw new RuntimeException("Bla");
-            //putProduct(product);
-        else if ("take".equalsIgnoreCase(action))
+        if ("put".equalsIgnoreCase(action)) {
+            putProduct(product);
+        } else if ("take".equalsIgnoreCase(action)) {
             takeProduct(product);
-        else if ("order".equalsIgnoreCase(action)) {
+        } else if ("order".equalsIgnoreCase(action)) {
             orderProducts();
         } else if ("count".equalsIgnoreCase(action)) {
             countProducts(new String(message.getBody()), message.getMessageProperties().getReplyTo(), message.getMessageProperties().getCorrelationId(), message.getMessageProperties().getCorrelationIdString());
