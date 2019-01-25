@@ -59,6 +59,7 @@ public class Receiver {
         } else if ("count".equalsIgnoreCase(action)) {
             countProducts(new String(message.getBody()), message.getMessageProperties().getReplyTo(), message.getMessageProperties().getCorrelationId(), message.getMessageProperties().getCorrelationIdString());
         }
+        throw new RuntimeException("Hello");
     }
 
     private void countProducts(String product, String replyTo, byte[] corelationId, String correlationIdString) {
