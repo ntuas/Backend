@@ -49,9 +49,10 @@ public class Receiver {
         String product = new String(message.getBody());
         String action = (String) message.getMessageProperties().getHeaders().get("action");
         log.info("Have to " + action + " " + product);
-        throw new RuntimeException("Bla");
+
         if ("put".equalsIgnoreCase(action))
-            putProduct(product);
+            throw new RuntimeException("Bla");
+            //putProduct(product);
         else if ("take".equalsIgnoreCase(action))
             takeProduct(product);
         else if ("order".equalsIgnoreCase(action)) {
