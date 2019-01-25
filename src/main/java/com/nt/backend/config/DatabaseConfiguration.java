@@ -39,6 +39,9 @@ public class DatabaseConfiguration {
         poolProperties.setValidationQuery("SELECT 1");
         poolProperties.setDriverClassName(database2DbDriverMap.get(database));
             setConnectionPropertiesFromUrl(poolProperties);
+        poolProperties.setInitialSize(5);
+        poolProperties.setMaxActive(5);
+        poolProperties.setMaxIdle(1);
         log.info(poolProperties.toString());
         return poolProperties;
     }
