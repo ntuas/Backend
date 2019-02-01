@@ -22,6 +22,6 @@ public class BackendApplication {
 
 	@PostConstruct
 	public void logHostIp() throws UnknownHostException {
-		LOGGER.info("Hello :) Host Ip Address: {}", InetAddress.getLocalHost().getHostAddress());
+		LOGGER.info("Hello UAS Frankfurt :) Host Ip Address: {}", InetAddress.getLocalHost().getHostAddress());
 	}
 }
